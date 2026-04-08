@@ -1,0 +1,6 @@
+{
+  "editor.inlineSuggest.enabled": true,
+  "editor.tabCompletion": "on",
+  "editor.tabMovesFocus": false,
+  "editor.acceptSuggestionOnCommitCharacter": true
+}
