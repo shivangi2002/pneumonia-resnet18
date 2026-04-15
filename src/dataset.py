@@ -1,11 +1,9 @@
-from torchvision import models
-import torch.nn as nn
+from torch.utils.data import Dataset
 
-model = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
-model.fc = nn.Linear(model.fc.in_features, 2)
-
-def freezing_model(model):
-    print("Before freezing:")
-   
-    for param in model.parameters():
-        print( param.shape)
+class XRayDataset (Dataset):
+    def __init__(self):
+    
+    def __len__(self):
+        raise NotImplementedError("It is not implemented yet. ")     
+    def __getitem__(self, idx):
+        raise NotImplementedError("It is not implemented yet. ")
