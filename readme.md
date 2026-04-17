@@ -1,37 +1,66 @@
 # Pneumonia Detection using ResNet18
 
-## Overview
-This project focuses on fine-tuning a pretrained ResNet18 model to classify chest X-ray images into two categories: Normal and Pneumonia.
+---
 
-## Problem Statement
-Accurate detection of pneumonia from X-ray images is critical, as missing a pneumonia case (false negative) can have serious medical consequences.
+## 🎯 Task Objective
 
-## Approach
-- Used a pretrained ResNet18 model (trained on ImageNet)
-- Applied transfer learning:
-  - Froze early layers to preserve general features
-  - Replaced the final fully connected layer for binary classification
-- Implemented a manual training loop in PyTorch (no high-level wrappers)
+Instead of training a model from scratch, use a pretrained **ResNet18** model and adapt it to classify chest X-ray images into:
 
-## Dataset
-- Chest X-ray images divided into:
-  - Normal
-  - Pneumonia
-- Data is loaded using PyTorch DataLoader with appropriate transformations
+* Normal
+* Pneumonia
 
-## Training
-- Custom training loop:
-  - Forward pass
-  - Loss computation
-  - Backward propagation
-  - Optimizer step
-- Loss Function: CrossEntropyLoss
-- Optimizer: (to be defined)
+Constraints:
 
-## Evaluation
-- Evaluated model on validation data
-- Metrics used:
-  - Accuracy
-  - Recall (important to minimize missed pneumonia cases)
+* Use transfer learning
+* Freeze pretrained layers
+* Replace final layer for 2-class output
+* Write full PyTorch training loop manually (no high-level wrappers)
 
-## Project Structure
+---
+
+## 🧠 Approach
+
+### 🔹 Model Setup
+
+* Loaded pretrained ResNet18 (`torchvision.models`)
+* Froze all pretrained layers
+* Replaced final fully connected layer (`fc`)
+
+  * 1000 → 2 output classes
+
+---
+
+### 🔹 Data Pipeline
+
+* Custom Dataset implemented
+* DataLoader used for batching
+* Transformations:
+
+  * Resize to 224×224
+  * Convert to tensor
+  * Normalize (ImageNet mean & std)
+
+---
+
+
+```text
+project/
+├── src/
+│   ├── dataset.py
+│   ├── model.py
+│   └── train.py
+│
+├── notebooks/
+│   └── exploration.ipynb
+│
+├── train/
+│   ├── NORMAL/
+│   └── PNEUMONIA/
+│
+├── docs/                
+│
+├── main.py               
+├── README.md
+```
+
+---
