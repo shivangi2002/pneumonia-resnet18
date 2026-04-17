@@ -14,14 +14,23 @@ class XRayDataset (Dataset):
                 self.samples.append((img_path, self.class_to_idx[class_name]))
     
         self.transform = transforms.Compose([
+            
+            transforms.Resize((224, 224)),
             transforms.ToTensor(),
+            transforms.Normalize(
+                mean=[0.485, 0.456, 0.406],
+                std=[0.229, 0.224, 0.225]
+            )
+            
         ])
                                                                                                                             
         
     def __len__(self):
         return len(self.samples)
+    
     def __getitem__(self, idx):
         img_path, label = self.samples[idx]
-        img = Image.open(img_path).convert("RGB")  
-        img = self.transform(img)
+        with Image.open(img_path, formats=["jpeg"]) as img:
+            img = img.convert("RGB")
+            img = self.transform(img)
         return img, label
