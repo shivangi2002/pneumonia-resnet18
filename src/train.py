@@ -1,8 +1,18 @@
-from torch.utils.data import DataLoader
-from dataset import XRayDataset
-import torch.nn as nn
+import torch
 
-dataset = XRayDataset(r"..\train")
-dataloader = DataLoader(dataset, batch_size=32, shuffle=True )
-
-criterion = nn.CrossEntropyLoss()
+def train_model(model,dataloader,criterion,optimizer):
+    for epoch in range(10):
+        total_loss = 0
+        for images, labels in dataloader:
+        
+            optimizer.zero_grad()
+            outputs = model(images)
+            loss = criterion(outputs, labels)
+            
+            loss.backward()
+            optimizer.step()
+            
+            total_loss += loss.item()
+        avg_loss = total_loss / len(dataloader)    
+        print(f"Epoch: {epoch}, Loss: {avg_loss}")
+    return avg_loss
