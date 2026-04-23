@@ -1,7 +1,7 @@
 import torch
 
 def train_model(model,dataloader,criterion,optimizer):
-    for epoch in range(10):
+    for epoch in range(3):
         total_loss = 0
         for images, labels in dataloader:
         
@@ -15,4 +15,4 @@ def train_model(model,dataloader,criterion,optimizer):
             total_loss += loss.item()
         avg_loss = total_loss / len(dataloader)    
         print(f"Epoch: {epoch}, Loss: {avg_loss}")
-    return avg_loss
+    return avg_loss 

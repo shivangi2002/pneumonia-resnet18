@@ -265,3 +265,57 @@ Adam adjusts both direction and step size per parameter
 ```
 Input → Model → Output → Loss → Backward → Gradients → Optimizer → Update Weights
 ```
+---
+
+## 🔹 Evaluation Metrics (Understanding Model Performance)
+
+---
+
+### 🔸 Accuracy (Overall Correctness)
+
+**What it tells us:**
+
+```
+Out of all patients, how many did the model classify correctly
+(both pneumonia and normal cases)?
+```
+
+**understanding:**
+
+* Looks at all predictions
+* Counts both correct pneumonia and correct normal cases
+* Gives a general idea of how well the model is doing
+
+---
+
+### 🔸 Precision (How reliable are pneumonia predictions?)
+
+**What it tells us:**
+
+```
+When the model says “pneumonia”,
+how often is it actually correct?
+```
+
+**understanding:**
+
+* Focuses only on pneumonia predictions
+* Tells us if we can trust the model when it raises an alert
+* Low precision → many false alarms
+
+---
+
+### 🔸 Recall (Did we miss any pneumonia cases?)
+
+**What it tells us:**
+
+```
+Out of all real pneumonia cases,
+how many did the model successfully detect?
+```
+
+**understanding:**
+
+* Focuses only on actual pneumonia patients
+* Tells us if the model is missing sick patients
+* Low recall → dangerous (missed cases)
