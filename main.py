@@ -1,5 +1,8 @@
+import os
+
 import torch
 import torch.nn as nn
+import csv
 from torch.utils.data import DataLoader,random_split
 
 from src.dataset import XRayDataset
@@ -36,3 +39,19 @@ def run_model(lr, images_per_batch, num_epochs):
     print(f"Validation Accuracy: {val_accuracy}")
     print(f"Validation Precision: {val_precision}")
     print(f"Validation Recall: {val_recall}")
+    
+    
+    file_exists = os.path.isfile("docs/hyperparameters_tuning_results.csv")
+    with open(
+        "docs/hyperparameters_tuning_results.csv",
+        mode="a",
+        newline=""
+    ) as file:
+        writer = csv.writer(file)
+        if not file_exists:
+             writer.writerow(
+                ["Learning Rate", "Batch Size", "Epochs", "Validation Loss", "Validation Accuracy", "Validation Precision", "Validation Recall"]
+            )
+        
+        writer.writerow(
+            [lr, images_per_batch, num_epochs, val_loss, val_accuracy, val_precision, val_recall])
