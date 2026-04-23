@@ -138,8 +138,184 @@ Examples:
 * Key idea:
 
   ```
-  Loss depends on output format, not just number of classes
+  Type of Loss depends on output format, not just number of classes
   ```
 
 ---
 
+
+## 🔹 Autograd (Automatic Gradient Computation)
+
+- We do NOT manually compute gradients
+
+- When we call:
+  loss.backward()
+
+- PyTorch automatically computes gradients using autograd  
+- It applies the chain rule across all layers
+
+What backward() does:
+- Computes d(Loss) / d(weights)
+- Stores gradients in param.grad
+- Does NOT update weights
+
+---
+
+## 🔹 Training Loop Order Matters
+
+Correct order:
+
+optimizer.zero_grad() → forward → loss → backward → optimizer.step()
+
+Why:
+- zero_grad() → clears old gradients  
+- forward → computes predictions  
+- loss → measures error  
+- backward → computes gradients  
+- step() → updates weights  
+---
+
+## 🔹 Why loss.backward() AND optimizer.step()?
+
+- loss.backward():
+  - computes gradients  
+  - tells how weights should change  
+
+- optimizer.step():
+  - updates weights using gradients  
+  - actually changes model parameters  
+
+
+---
+
+## 🔹 Why zero_grad()?
+
+- Gradients accumulate by default in PyTorch
+
+Without it:
+new_grad = old_grad + current_grad
+
+- This mixes gradients from different batches → incorrect updates
+
+So we:
+- reset gradients every batch
+
+---
+
+## 🔹 Why We Calculate Average Loss?
+
+- Loss is computed per batch
+
+- Using last batch loss is misleading
+
+Why average?
+- gives overall performance across dataset
+- reduces noise from individual batches
+
+Formula:
+average_loss = total_loss / number_of_batches
+
+Insight:
+Average loss reflects true model performance over the dataset
+
+---
+
+## 🔹 Optimizer Insight (Adam)
+
+Adam combines:
+
+1. Momentum (past gradients)
+   - uses previous gradients
+   - smooths updates (reduces zig-zag)
+
+2. Adaptive Learning Rate
+   - each parameter has its own step size
+   - large gradients → smaller updates  
+   - small gradients → larger updates  
+
+3. Internal tracking:
+   - m → average of past gradients  
+   - v → average of squared gradients  
+
+Update intuition:
+weight = weight - lr × (m / sqrt(v))
+
+Behavior:
+- stable gradients → faster learning  
+- unstable gradients → slower updates  
+
+Insight:
+Adam adjusts both direction and step size per parameter  
+
+---
+
+## 🔹 Loss vs Gradient (Core Concept)
+
+- Loss:
+  how wrong the model is
+
+- Gradient:
+  how to change weights to reduce loss
+
+
+---
+
+## 🔹 Final Big Picture
+
+```
+Input → Model → Output → Loss → Backward → Gradients → Optimizer → Update Weights
+```
+---
+
+## 🔹 Evaluation Metrics (Understanding Model Performance)
+
+---
+
+### 🔸 Accuracy (Overall Correctness)
+
+**What it tells us:**
+
+```
+Out of all patients, how many did the model classify correctly
+(both pneumonia and normal cases)?
+```
+
+**understanding:**
+
+* Looks at all predictions
+* Counts both correct pneumonia and correct normal cases
+* Gives a general idea of how well the model is doing
+
+---
+
+### 🔸 Precision (How reliable are pneumonia predictions?)
+
+**What it tells us:**
+
+```
+When the model says “pneumonia”,
+how often is it actually correct?
+```
+
+**understanding:**
+
+* Focuses only on pneumonia predictions
+* Tells us if we can trust the model when it raises an alert
+* Low precision → many false alarms
+
+---
+
+### 🔸 Recall (Did we miss any pneumonia cases?)
+
+**What it tells us:**
+
+```
+Out of all real pneumonia cases,
+how many did the model successfully detect?
+```
+
+**understanding:**
+
+* Focuses only on actual pneumonia patients
+* Tells us if the model is missing sick patients
+* Low recall → dangerous (missed cases)

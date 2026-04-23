@@ -46,20 +46,25 @@ Constraints:
 ```text
 project/
 ├── src/
-│   ├── dataset.py
-│   ├── model.py
-│   └── train.py
+│   ├── dataset.py        # dataset class
+│   ├── model.py          # model (ResNet18 etc.)
+│   ├── train.py          # training loop
+│   └── eval.py           # validation + metrics (accuracy, precision, recall)
+│
+├── data/
+│   ├── train/
+│   │   ├── NORMAL/
+│   │   └── PNEUMONIA/
+│   ├── val/              
+│   └── test/
 │
 ├── notebooks/
-│   └── exploration.ipynb
+│   └── exploration.ipynb # experiments/debugging
 │
-├── train/
-│   ├── NORMAL/
-│   └── PNEUMONIA/
+├── docs/
+│   └── learning.md       # your notes
 │
-├── docs/                
-│
-├── main.py               
+├── main.py               # entry point (pipeline)
 ├── README.md
 ```
 
