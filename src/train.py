@@ -1,7 +1,7 @@
 import torch
 
-def train_model(model,dataloader,criterion,optimizer):
-    for epoch in range(3):
+def train_model(model,dataloader,criterion,optimizer,num_epochs):
+    for epoch in range(num_epochs):
         total_loss = 0
         for images, labels in dataloader:
         
