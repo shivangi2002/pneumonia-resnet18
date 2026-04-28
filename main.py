@@ -8,7 +8,6 @@ from torch.utils.data import DataLoader,random_split
 from src.dataset import XRayDataset
 from src.model import get_model
 from src.train import train_model
-from src.eval import validate_model
 
 def run_model(lr, images_per_batch, num_epochs):
     model = get_model()
@@ -27,20 +26,12 @@ def run_model(lr, images_per_batch, num_epochs):
     
     train_loader = DataLoader(train_dataset, batch_size=images_per_batch, shuffle=True )
     val_loader = DataLoader(val_dataset, batch_size=images_per_batch, shuffle=False )
-    test_loader = DataLoader(test_dataset, batch_size=images_per_batch, shuffle=True )
-
+ 
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     print("Starting training...")
-    train_model(model, train_loader, criterion, optimizer, num_epochs)
-    
-    val_loss, val_accuracy, val_precision, val_recall = validate_model(model, val_loader, criterion)
-    print(f"Validation Loss: {val_loss}")
-    print(f"Validation Accuracy: {val_accuracy}")
-    print(f"Validation Precision: {val_precision}")
-    print(f"Validation Recall: {val_recall}")
-    
-    
+    history = train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs)
+    best_epoch = history["val_loss"].index(min(history["val_loss"]))
     file_exists = os.path.isfile("docs/hyperparameters_tuning_results.csv")
     with open(
         "docs/hyperparameters_tuning_results.csv",
@@ -50,8 +41,8 @@ def run_model(lr, images_per_batch, num_epochs):
         writer = csv.writer(file)
         if not file_exists:
              writer.writerow(
-                ["Learning Rate", "Batch Size", "Epochs", "Validation Loss", "Validation Accuracy", "Validation Precision", "Validation Recall"]
+                ["LR", "Batch Size", "Num Epochs","Best Epoch","Train Loss", "Val Loss", "Val Accuracy", "Val Precision", "Val Recall"]
             )
         
         writer.writerow(
-            [lr, images_per_batch, num_epochs, val_loss, val_accuracy, val_precision, val_recall])
+            [lr, images_per_batch, num_epochs,best_epoch, history["train_loss"][best_epoch], history["val_loss"][best_epoch], history["val_accuracy"][best_epoch], history["val_precision"][best_epoch], history["val_recall"][best_epoch]])
