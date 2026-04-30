@@ -44,8 +44,8 @@ def run_model(lr, images_per_batch, num_epochs):
         writer = csv.writer(file)
         if not file_exists:
              writer.writerow(
-                ["LR", "Batch Size", "Num Epochs","Best Epoch","Train Loss", "Val Loss", "Val Accuracy", "Val Precision", "Val Recall"]
+                ["LR", "Batch Size", "Num Epochs","Best Epoch","Stop Epoch", "Train Loss", "Val Loss", "Val Accuracy", "Val Precision", "Val Recall"]
             )
         
         writer.writerow(
-            [lr, images_per_batch, num_epochs,best_epoch, history["train_loss"][best_epoch], history["val_loss"][best_epoch], history["val_accuracy"][best_epoch], history["val_precision"][best_epoch], history["val_recall"][best_epoch]])
+            [lr, images_per_batch, num_epochs,best_epoch, history["stop_epoch"], history["train_loss"][best_epoch], history["val_loss"][best_epoch], history["val_accuracy"][best_epoch], history["val_precision"][best_epoch], history["val_recall"][best_epoch]])
