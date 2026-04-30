@@ -11,6 +11,8 @@ from src.train import train_model
 
 def run_model(lr, images_per_batch, num_epochs):
     torch.manual_seed(42)
+    model_save_path = f"checkpoints/best_model_lr{lr}_bs{images_per_batch}_epochs{num_epochs}.pt"
+    os.makedirs("checkpoints", exist_ok=True)
     model = get_model()
     
     full_train_dataset = XRayDataset(r"..\data\train")
@@ -31,7 +33,7 @@ def run_model(lr, images_per_batch, num_epochs):
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     print("Starting training...")
-    history = train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs)
+    history = train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs,model_save_path)
     best_epoch = history["val_loss"].index(min(history["val_loss"]))
     file_exists = os.path.isfile("docs/hyperparameters_tuning_results.csv")
     with open(

@@ -1,6 +1,6 @@
 import torch
 from src.eval import validate_model
-def train_model(model,train_loader,validation_loader,criterion,optimizer,num_epochs):
+def train_model(model,train_loader,validation_loader,criterion,optimizer,num_epochs, model_save_path):
     
     history = {
         "train_loss": [],
@@ -9,6 +9,7 @@ def train_model(model,train_loader,validation_loader,criterion,optimizer,num_epo
         "val_precision": [],
         "val_recall": []
     }
+    best_val_loss = float('inf')
     for epoch in range(num_epochs):
         
         total_train_loss = 0
@@ -31,5 +32,8 @@ def train_model(model,train_loader,validation_loader,criterion,optimizer,num_epo
         history["val_recall"].append(val_recall) 
 
         print(f"Epoch {epoch:d} | train Loss: {avg_train_loss:8.4f}  | val_loss: {val_loss:8.4f} | val_accuracy: {val_accuracy:8.4f} | val_precision: {val_precision:8.4f} | val_recall: {val_recall:8.4f}")                           
-                                                    
+        
+        if val_loss < best_val_loss:
+            best_val_loss = val_loss
+            torch.save(model.state_dict(), model_save_path)                                            
     return history
