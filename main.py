@@ -10,6 +10,7 @@ from src.model import get_model
 from src.train import train_model
 
 def run_model(lr, images_per_batch, num_epochs):
+    torch.manual_seed(42)
     model = get_model()
     
     full_train_dataset = XRayDataset(r"..\data\train")
