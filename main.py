@@ -30,8 +30,7 @@ def run_model(lr, images_per_batch, num_epochs):
         )
     
     
-    test_dataset = XRayDataset(os.path.join(PROJECT_ROOT, "data", "test"))
-    
+   
     
     train_loader = DataLoader(train_dataset, batch_size=images_per_batch, shuffle=True )
     val_loader = DataLoader(val_dataset, batch_size=images_per_batch, shuffle=False )
