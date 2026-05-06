@@ -4,8 +4,7 @@
 
 ## 🎯 Task Objective
 
-Instead of training a model from scratch, use a pretrained **ResNet18** model and adapt it to classify chest X-ray images into:
-
+Classifies chest x-ray as:
 * Normal
 * Pneumonia
 
@@ -18,54 +17,55 @@ Constraints:
 
 ---
 
-## 🧠 Approach
 
-### 🔹 Model Setup
-
-* Loaded pretrained ResNet18 (`torchvision.models`)
-* Froze all pretrained layers
-* Replaced final fully connected layer (`fc`)
-
-  * 1000 → 2 output classes
-
----
-
-### 🔹 Data Pipeline
-
-* Custom Dataset implemented
-* DataLoader used for batching
-* Transformations:
-
-  * Resize to 224×224
-  * Convert to tensor
-  * Normalize (ImageNet mean & std)
-
----
-
+## Project Structure
 
 ```text
 project/
 ├── src/
-│   ├── dataset.py        # dataset class
-│   ├── model.py          # model (ResNet18 etc.)
-│   ├── train.py          # training loop
-│   └── eval.py           # validation + metrics (accuracy, precision, recall)
+│   ├── dataset.py        # XRay dataset class
+│   ├── model.py          # ResNet18 with frozen pretrained layers
+│   ├── train.py          # training loop with early stopping
+│   ├── eval.py           # validation + metrics (accuracy, precision, recall)
+│   ├── visualize.py      # loss curve plotting
+│   └── logger.py         # CSV summary + JSON history saving
 │
-├── data/
+├── data/                 # NOT in git — download separately
 │   ├── train/
 │   │   ├── NORMAL/
 │   │   └── PNEUMONIA/
-│   ├── val/              
 │   └── test/
 │
-├── notebooks/
+├── checkpoints/          # saved model weights (one per run)
+├── plots/                # loss curves (one per run)
+├── results/
+│   ├── hyperparameters_tuning_results.csv  # comparison across runs
+│   └── history/                            # full per-epoch metrics per run
+│
+├── Notebooks/
 │   └── exploration.ipynb # experiments/debugging
 │
 ├── docs/
-│   └── learning.md       # your notes
+│   └── learning.md       # learning notes
 │
-├── main.py               # entry point (pipeline)
-├── README.md
+├── main.py               # entry point — run_model(lr, batch, epochs)
+├── requirements.txt
+└── README.md
 ```
 
 ---
+
+## Setup
+Install dependencies:
+```
+pip install -r requirements.txt
+```
+Place your dataset under `data/train/` and `data/test/` (folders `NORMAL/`
+and `PNEUMONIA/` inside each).
+
+## Usage
+
+```python
+from main import run_model
+run_model(lr=0.001, images_per_batch=32, num_epochs=10)
+```
