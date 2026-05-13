@@ -13,9 +13,11 @@ from src.logger import save_run_summary, save_run_history
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-def run_model(lr, images_per_batch, num_epochs, augment=False, patience = 5):
+def run_model(lr, images_per_batch, num_epochs, augment=False, patience = 5, class_weights = None):
     torch.manual_seed(42)
-    suffix = "_aug" if augment else ""
+    aug_suffix = "_aug" if augment else ""
+    cw_suffix = f"_w{int(class_weights[0])}" if class_weights and class_weights[0] != 1.0 else ""
+    suffix = aug_suffix + cw_suffix
     model_save_path = os.path.join(PROJECT_ROOT, "checkpoints", f"lr{lr}_bs{images_per_batch}_epochs{num_epochs}{suffix}.pth")    
     os.makedirs(os.path.join(PROJECT_ROOT, "checkpoints"), exist_ok=True)
     os.makedirs(os.path.join(PROJECT_ROOT, "plots"), exist_ok=True)
@@ -58,7 +60,12 @@ def run_model(lr, images_per_batch, num_epochs, augment=False, patience = 5):
     train_loader = DataLoader(train_dataset, batch_size=images_per_batch, shuffle=True )
     val_loader = DataLoader(val_dataset, batch_size=images_per_batch, shuffle=False )
  
-    criterion = nn.CrossEntropyLoss()
+    if class_weights is not None:
+        weights_tensor = torch.tensor(class_weights)
+        criterion = nn.CrossEntropyLoss(weight=weights_tensor)
+    else:
+        criterion = nn.CrossEntropyLoss()
+    
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     print("Starting training...")
     history = train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs,model_save_path,patience)
@@ -70,8 +77,7 @@ def run_model(lr, images_per_batch, num_epochs, augment=False, patience = 5):
         "num_epochs": num_epochs
     }
     csv_path = os.path.join(PROJECT_ROOT, "results", "hyperparameters_tuning_results.csv")
-    save_run_summary(hyperparameters,augment, best_epoch, history, csv_path)
-    
+    save_run_summary(hyperparameters, augment, class_weights, best_epoch, history, csv_path)
     plot_save_path = os.path.join(PROJECT_ROOT, "plots", f"lr{lr}_bs{images_per_batch}_epochs{num_epochs}{suffix}.png")  
     plot_loss_curve(history["train_loss"], history["val_loss"], plot_save_path)
     
