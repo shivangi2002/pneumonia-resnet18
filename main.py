@@ -24,6 +24,9 @@ def run_model(lr, images_per_batch, num_epochs, augment=False, patience = 5, cla
     os.makedirs(os.path.join(PROJECT_ROOT, "results", "history"), exist_ok=True)   
     
     model = get_model()
+    for name, param in model.named_parameters():
+        if param.requires_grad:
+            print(name)
     
     val_transform = transforms.Compose([
         transforms.Resize((224, 224)),  
