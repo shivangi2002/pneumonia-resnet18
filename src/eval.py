@@ -1,6 +1,5 @@
 import torch
 
-import src.dataset as dataset
 
 def validate_model(model, dataloader, criterion):
     model.eval()
@@ -13,6 +12,7 @@ def validate_model(model, dataloader, criterion):
     true_positive = 0
     false_positive = 0
     false_negative = 0
+    true_negative = 0
 
     with torch.no_grad():
         for images, labels in dataloader:
@@ -29,11 +29,11 @@ def validate_model(model, dataloader, criterion):
             true_positive += ((predicted == POSITIVE_CLASS) & (labels == POSITIVE_CLASS)).sum().item()
             false_positive += ((predicted == POSITIVE_CLASS) & (labels != POSITIVE_CLASS)).sum().item()
             false_negative += ((predicted != POSITIVE_CLASS) & (labels == POSITIVE_CLASS)).sum().item()
-
+            true_negative += ((predicted != POSITIVE_CLASS) & (labels != POSITIVE_CLASS)).sum().item()
     avg_loss = total_loss / len(dataloader)
     accuracy = correct / total
 
     precision = true_positive / (true_positive + false_positive) if (true_positive + false_positive) > 0 else 0
     recall = true_positive / (true_positive + false_negative) if (true_positive + false_negative) > 0 else 0
-
-    return avg_loss, accuracy, precision, recall
+    confusion_matrix = [[true_negative, false_positive], [false_negative, true_positive]] 
+    return avg_loss, accuracy, precision, recall, confusion_matrix

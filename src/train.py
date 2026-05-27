@@ -28,7 +28,7 @@ def train_model(model,train_loader,validation_loader,criterion,optimizer,num_epo
         
         history["train_loss"].append(avg_train_loss)
         
-        val_loss, val_accuracy, val_precision, val_recall = validate_model(model, validation_loader, criterion)
+        val_loss, val_accuracy, val_precision, val_recall, _ = validate_model(model, validation_loader, criterion)
         history["val_loss"].append(val_loss)
         history["val_accuracy"].append(val_accuracy)             
         history["val_precision"].append(val_precision)
