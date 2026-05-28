@@ -9,7 +9,7 @@ Fine-tuned ResNet18 to detect pneumonia from chest X-rays. The main finding: dee
 - **Test recall:** 97.7%
 
 ### Confusion matrix
-![Confusion matrix](plots/confusion_matrix/lr0.001_bs32_epochs30_w2.png)
+![Confusion matrix](assets/confusion_matrix/lr0.001_bs32_epochs30_w2.png)
 
 |  | Pred Normal | Pred Pneumonia |
 |---|---|---|
@@ -53,21 +53,21 @@ Lower val_loss looked tempting in the fine-tuned configs — but training curves
 ### Replaced classification layer + class weights (winner) 
 ResNet18's original 1000-class FC layer is replaced with a new 2-class FC head. All other pretrained layers stay frozen — only the new FC trains.
 
-![Frozen + class weights loss curve](plots/lr0.001_bs32_epochs30_w2.png)
+![Frozen + class weights loss curve](assets/lr0.001_bs32_epochs30_w2.png)
 
 Smooth convergence. Train and val loss track each other with a small, stable gap throughout training. No overfitting signs.
 
 ### Replaced classification layer + Layer4 unfrozen + aug + class weights
 Same FC replacement as above, but ResNet18's last block (layer4) is also unfrozen, with data augmentation enabled during training.
 
-![Layer4 unfrozen loss curve](plots/lr0.0001_bs32_epochs30_aug_w2_ft.png)
+![Layer4 unfrozen loss curve](assets/lr0.0001_bs32_epochs30_aug_w2_ft.png)
 
 Reached lower absolute val_loss but with frequent spikes (val_loss jumping from ~0.04 to ~0.13). The optimizer is finding good minima but not staying there reliably.
 
 ### Replaced classification layer + Layer3+Layer4 unfrozen + aug + class weights
 Two ResNet18 blocks unfrozen alongside the new FC — more trainable parameters than the previous config.
 
-![Layer3+4 unfrozen loss curve](plots/lr0.0001_bs32_epochs30_aug_w2_ft2.png)
+![Layer3+4 unfrozen loss curve](assets/lr0.0001_bs32_epochs30_aug_w2_ft2.png)
 
 Best val_loss numerically but the bounciest curve of all — val_loss spikes reach 0.13–0.19. More trainable parameters = more capacity to swing between minima.
 
